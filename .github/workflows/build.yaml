@@ -17,24 +17,15 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install conan
         choco install qt5-default cmake qtcreator 
-        choco install llvm --version=10.0.0
-        
-    - name: Cache Conan dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.conan
-        key: ${{ runner.os }}-conan-${{ hashFiles('**/conanfile.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-conan-
-          
+        git clone https://github.com/microsoft/vcpkg
+        ./vcpkg/bootstrap-vcpkg.bat
+
     - name: Build
       run: |
         mkdir build
         cd build
-        conan install .. --build missing
-        cmake .. -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=Release
+        cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
         cmake --build . --config Release
         
     - name: Cache build artifacts
