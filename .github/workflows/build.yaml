@@ -18,9 +18,8 @@ jobs:
     - name: Install dependencies
       run: |
         choco install qt5-default cmake qtcreator ninja strawberryperl msys2
-        refreshenv
-        git clone https://github.com/microsoft/vcpkg
-        ./vcpkg/bootstrap-vcpkg.bat
+        # git clone https://github.com/microsoft/vcpkg
+        # ./vcpkg/bootstrap-vcpkg.bat
         
     - name: Install MSYS2 dependencies
       run: |
@@ -45,8 +44,7 @@ jobs:
       run: |
         echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
         echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin" >> $GITHUB_PATH
-        refreshenv
-        
+ 
     - name: Install Python dependencies
       run: |
         pip install -r requirements.txt
