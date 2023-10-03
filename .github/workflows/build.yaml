@@ -17,17 +17,48 @@ jobs:
 
     - name: Install dependencies
       run: |
-        choco install qt5-default cmake qtcreator 
+        choco install qt5-default cmake qtcreator ninja strawberryperl msys2
+        refreshenv
         git clone https://github.com/microsoft/vcpkg
         ./vcpkg/bootstrap-vcpkg.bat
-
+        
+    - name: Install MSYS2 dependencies
+      run: |
+        C:\msys64\usr\bin\bash.exe -l -i -c "pacman -S --needed --noconfirm \
+          mingw-w64-x86_64-autotools \
+          mingw-w64-x86_64-cmake \
+          mingw-w64-x86_64-glew \
+          mingw-w64-x86_64-libarchive \
+          mingw-w64-x86_64-make \
+          mingw-w64-x86_64-meson \
+          mingw-w64-x86_64-python-pip \
+          mingw-w64-x86_64-python-psutil \
+          mingw-w64-x86_64-toolchain \
+          bison \
+          flex \
+          git \
+          nasm \
+          p7zip \
+          unzip \
+          zip"
+    - name: Set up environment
+      run: |
+        echo "C:\msys64\mingw64\bin" >> $GITHUB_PATH
+        echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin" >> $GITHUB_PATH
+        refreshenv
+        
+    - name: Install Python dependencies
+      run: |
+        pip install -r requirements.txt
+        
     - name: Build
       run: |
         mkdir build
         cd build
-        cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake
+        cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release
-        
+
+
     - name: Cache build artifacts
       uses: actions/cache@v2
       with:
