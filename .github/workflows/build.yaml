@@ -18,7 +18,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install conan
-        choco install qtcreator --version=4.12.4
+        choco install qt5-default cmake qtcreator 
         choco install llvm --version=10.0.0
         
     - name: Cache Conan dependencies
